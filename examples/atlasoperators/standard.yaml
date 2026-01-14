@@ -1,0 +1,22 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: AtlasOperator
+metadata:
+  name: atlas-operator
+  namespace: example-env
+spec:
+  clusterName: my-cluster
+  namespace: atlas-operator
+  labels:
+    team: platform
+    environment: production
+  providerConfigRef:
+    name: my-cluster
+    kind: ProviderConfig
+  helm:
+    atlasOperator:
+      values:
+        prewarmDevDB: true
+        allowCustomConfig: true
+        extraEnvs:
+          - name: ATLAS_NO_UPDATE_NOTIFIER
+            value: "true"

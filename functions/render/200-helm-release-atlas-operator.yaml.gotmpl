@@ -1,0 +1,39 @@
+# code: language=yaml
+#
+# Atlas Operator Helm Release (OCI-based chart)
+#
+
+{{- $a := $state.atlasoperator }}
+---
+apiVersion: helm.m.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: {{ $a.releaseName }}
+  annotations:
+    {{ setResourceNameAnnotation "helm-release-atlas-operator" }}
+  labels: {{ $a.labels | toJson }}
+spec:
+  managementPolicies: {{ $a.managementPolicies | toJson }}
+  forProvider:
+    chart:
+      name: atlas-operator
+      url: oci://ghcr.io/ariga/charts
+      version: 0.7.15
+    namespace: {{ $a.namespace }}
+    {{- if $a.overrideAllValues }}
+    values:
+      {{- toYaml $a.overrideAllValues | nindent 6 }}
+    {{- else }}
+    values:
+      fullnameOverride: atlas-operator
+      nameOverride: atlas-operator
+      prewarmDevDB: true
+      allowCustomConfig: false
+      {{- if $a.values }}
+      {{- toYaml $a.values | nindent 6 }}
+      {{- end }}
+    {{- end }}
+  rollbackLimit: 3
+  providerConfigRef:
+    name: {{ $a.providerConfigRef.name }}
+    kind: {{ $a.providerConfigRef.kind }}

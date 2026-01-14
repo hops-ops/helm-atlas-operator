@@ -1,0 +1,7 @@
+apiVersion: helm.hops.ops.com.ai/v1alpha1
+kind: AtlasOperator
+metadata:
+  name: atlas-operator
+  namespace: example-env
+spec:
+  clusterName: my-cluster
